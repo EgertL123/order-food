@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import MealItem from './MealItem'
+import '/home/egert/order-food/order-food/src/index.css'
 
 const Meals = () => {
     const [meals, setMeals] = useState([])
@@ -22,8 +24,19 @@ const Meals = () => {
         fetchMeals()
     }, [])
 
-    return null
-
+    return (
+        <ul id="meals">
+          {meals.map((meal) => (
+            <MealItem
+              key={meal.id}
+              name={meal.name}
+              price={meal.price}
+              description={meal.description}
+              image={meal.image}
+            />
+          ))}
+        </ul>
+      );
 }
 
 export default Meals;
