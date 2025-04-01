@@ -1,13 +1,12 @@
-import { useContext } from "react";
-import logo from "../assets/logo.jpg";
-import Button from "./UI/Button";
-import CartContext from "../store/CartContext";
+import { useContext } from "react"
+import logo from "../assets/logo.jpg"
+import Button from "./UI/Button"
+import CartContext from "../store/CartContext"
 
 const Header = (props) => {
-  const cartCtx = useContext(CartContext);
+  const cartCtx = useContext(CartContext)
 
-  const totalItems = cartCtx.items.reduce((total, item) => total + item.quantity, 0);
-  console.log("Cart items:", cartCtx.items)
+  const totalItems = cartCtx.items.reduce((total, item) => total + item.quantity, 0)
 
   return (
     <header id="main-header">
@@ -21,7 +20,7 @@ const Header = (props) => {
         </Button>
       </nav>
     </header>
-  );
-};
+  )
+}
 
-export default Header;
+export default Header

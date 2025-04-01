@@ -30,7 +30,7 @@ const MealItem = (props) => {
           <p className="meal-item-description">{props.description}</p>
         </div>
         <div className="meal-item-actions">
-          <Button onClick={handleAddToCart}>Add to Cart</Button>
+          <Button textOnly={false} onClick={handleAddToCart}>Add to Cart</Button>
         </div>
       </article>
     </li>

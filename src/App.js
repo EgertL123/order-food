@@ -1,4 +1,4 @@
-import { useReducer, useState } from "react"
+import { useReducer, useState, useEffect } from "react"
 import Header from "./components/Header"
 import Meals from "./components/Meals"
 import CartContext from "./store/CartContext"
@@ -10,7 +10,7 @@ const cartReducer = (state, action) => {
       (item) => item.id === action.item.id
     )
 
-    let updatedItems;
+    let updatedItems
 
     if (existingCartItemIndex !== -1) {
       updatedItems = [...state.items]
@@ -25,6 +25,10 @@ const cartReducer = (state, action) => {
     return { items: updatedItems }
   }
 
+  if (action.type === "CLEAR_CART") {
+    return { items: [] }
+  }
+
   return state
 }
 
@@ -37,7 +41,14 @@ const App = () => {
   }
 
   const openModalHandler = () => {
-    setIsModalOpen(true)
+    if (cartState.items.length > 0) {
+      setIsModalOpen(true)
+      console.log("Checkout started")
+      cartState.items.forEach((item) => {
+        console.log("Ostukorv sisaldab toodet:", item);
+        console.log(`ID: ${item.id}, Name: ${item.name}, Price: ${item.price}, Description: ${item.description}, Image: ${item.image}, Quantity: ${item.quantity}`);
+      })
+    }
   }
 
   const closeModalHandler = () => {
@@ -46,29 +57,32 @@ const App = () => {
 
   const checkoutHandler = () => {
     console.log("Checkout clicked!")
+    dispatchCartAction({ type: "CLEAR_CART" })
     setIsModalOpen(false)
+    alert("Ost teostatud!")
   }
 
-  const totalItems = cartState.items.reduce((total, item) => total + item.quantity, 0)
+  const totalItems = cartState.items.reduce(
+    (total, item) => total + item.quantity,
+    0
+  )
 
-  
+  useEffect(() => {
+    console.log("Cart items:", cartState.items)
+  }, [cartState.items])
+
   return (
     <CartContext.Provider value={{ items: cartState.items, addItem: addItemToCartHandler }}>
       <Header onOpenCart={openModalHandler} totalItems={totalItems} />
       <main>
         <Meals />
-        <Modal isOpen={isModalOpen} onClose={closeModalHandler}>
-          <h2>Cart</h2>
-          <ul>
-            {cartState.items.map((item) => (
-              <li key={item.id}>
-                {item.name} - {item.quantity}
-              </li>
-            ))}
-          </ul>
-          <button onClick={closeModalHandler}>Close</button>
-          <button onClick={checkoutHandler}>Checkout</button> 
-        </Modal>
+        <Modal
+          isOpen={isModalOpen}
+          onClose={closeModalHandler}
+          items={cartState.items}
+          onCheckout={checkoutHandler}
+          onCloseModal={closeModalHandler}
+        />
       </main>
     </CartContext.Provider>
   )
