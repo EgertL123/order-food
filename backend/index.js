@@ -17,8 +17,15 @@ app.use((req, res, next) => {
 });
 
 app.get("/meals", async (req, res) => {
-  const meals = "[]" // data should be read from file
-  res.json(JSON.parse(meals));
+  try {
+    const filePath = path.join(__dirname, "data", "meals.json"); 
+    const data = await fs.readFile(filePath, "utf-8"); 
+    const meals = JSON.parse(data); 
+    res.json(meals);
+  } catch (error) {
+    console.error("Error reading meals.json:", error);
+    res.status(500).json({ message: "Internal Server Error" }); 
+  }
 });
 
 app.use((req, res) => {
@@ -30,3 +37,4 @@ app.use((req, res) => {
 });
 
 app.listen(3001);
+console.log(`Server is running!`)
